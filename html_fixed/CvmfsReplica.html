@@ -58,7 +58,7 @@ This documentation applies to the latest version of cvmfsreplica: 0.9.4
 <p />
 cvmfsreplica is a tool to handle the process to running snapshots on a CVMFS Stratum-1 host. 
 It is meant to be more flexible and complete than a simple cron job. 
-The behavior of cvmfsreplica is driven by its configuration files. Therefore, it is recommended to read carefully the <a href="https://twiki.grid.iu.edu/bin/view/Documentation/Release3/CvmfsReplicaReferenceManual" target="_top">reference manual</a> before starting the service. 
+The behavior of cvmfsreplica is driven by its configuration files. Therefore, it is recommended to read carefully the <a href="CvmfsReplicaReferenceManual.html">reference manual</a> before starting the service. 
 Each CVMFS repository is set separately in the configuration files. For each one of them, an internal thread will be created that loops uninterruptedly, triggering snapshot commands periodically. 
 Besides triggering periodically a snapshot command, the service behavior can be modulated making use of the available plugins. 
 <p />
@@ -92,7 +92,7 @@ The Post plugins perform actions after the snapshot have been attempted, either 
  </tr>
 </table>
 <p />
-Detailed description of the plugins and their configuration can be found in the <a href="https://twiki.grid.iu.edu/bin/view/Documentation/Release3/CvmfsReplicaReferenceManual" target="_top">reference manual</a>
+Detailed description of the plugins and their configuration can be found in the <a href="CvmfsReplicaReferenceManual.html">reference manual</a>
 <p />
 <p />
 <h1><a name="4_Source_code"></a> 4  Source code </h1>
@@ -113,7 +113,7 @@ The cvmfsreplica daemon works on top of an existing, properly configured, CVMFS 
 Documentation on how to setup and run a CVMFS Stratum-1, or replica server, can be found <a href="https://twiki.grid.iu.edu/bin/view/Documentation/Release3/InstallCvmfsStratum1" target="_top">here</a>, 
 and also in the <a href="https://cvmfs.readthedocs.io/en/latest/cpt-replica.html" target="_top">official CVMFS documentation</a>
 <p />
-The details on how to setup and configure the cvmfsreplica are explained in the <a href="https://twiki.grid.iu.edu/bin/view/Documentation/Release3/CvmfsReplicaReferenceManual" target="_top">reference manual</a>
+The details on how to setup and configure the cvmfsreplica are explained in the <a href="CvmfsReplicaReferenceManual.html">reference manual</a>
 <p />
 <h1><a name="7_Run_the_service"></a> 7  Run the service </h1>
 <p />
