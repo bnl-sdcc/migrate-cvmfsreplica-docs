@@ -1,0 +1,537 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
+<head>
+
+</head>
+<body>
+
+<h1><a name="cvmfsreplica_Reference_Manual"></a>  cvmfsreplica: Reference Manual </h1>
+<li> <a href="?cover=print#1_About_this_Document">1  About this Document</a>
+</li> <li> <a href="?cover=print#2_Applicable_version">2  Applicable version</a>
+</li> <li> <a href="?cover=print#3_Nomenclature">3  Nomenclature</a> <ul>
+<li> <a href="?cover=print#3_1_Format_of_the_configuration">3.1  Format of the configuration files</a>
+</li> <li> <a href="?cover=print#3_2_Format_of_the_configuration">3.2  Format of the configuration variables</a>
+</li></ul> 
+</li> <li> <a href="?cover=print#4_sysconfig_cvmfsreplica">4  sysconfig/cvmfsreplica</a>
+</li> <li> <a href="?cover=print#5_logrotate_cvmfsreplica">5  logrotate/cvmfsreplica</a>
+</li> <li> <a href="?cover=print#6_cvmfsreplica_conf">6  cvmfsreplica.conf</a>
+</li> <li> <a href="?cover=print#7_repositories_conf">7  repositories.conf</a> <ul>
+<li> <a href="?cover=print#7_1_generic_variables">7.1  generic variables </a>
+</li> <li> <a href="?cover=print#7_2_Report_plugins">7.2  Report plugins</a> <ul>
+<li> <a href="?cover=print#7_2_1_Email">7.2.1  Email</a>
+</li></ul> 
+</li> <li> <a href="?cover=print#7_3_Acceptance_plugins">7.3  Acceptance plugins</a> <ul>
+<li> <a href="?cover=print#7_3_1_Diskspace">7.3.1  Diskspace</a>
+</li> <li> <a href="?cover=print#7_3_2_Updateserver">7.3.2  Updateserver</a>
+</li></ul> 
+</li> <li> <a href="?cover=print#7_4_Post_plugins">7.4  Post plugins</a> <ul>
+<li> <a href="?cover=print#7_4_1_Cleanup">7.4.1  Cleanup</a>
+</li></ul> 
+</li> <li> <a href="?cover=print#7_5_Report_plugins_invoked_from">7.5  Report plugins invoked from Acceptance plugins</a>
+</li></ul> 
+</li> <li> <a href="?cover=print#8_Examples_of_repositories_conf">8  Examples of repositories.conf</a> <ul>
+<li> <a href="?cover=print#8_1_Example_1">8.1  Example 1</a>
+</li> <li> <a href="?cover=print#8_2_Example_2">8.2  Example 2</a>
+</li> <li> <a href="?cover=print#8_3_Example_3">8.3  Example 3</a>
+</li> <li> <a href="?cover=print#8_4_Example_4">8.4  Example 4</a>
+</li> <li> <a href="?cover=print#8_5_Example_5">8.5  Example 5</a>
+</li> <li> <a href="?cover=print#8_6_Example_5">8.6  Example 5</a>
+</li> <li> <a href="?cover=print#8_7_Example_6">8.7  Example 6</a>
+</li> <li> <a href="?cover=print#8_8_Example_7">8.8  Example 7</a>
+</li></ul> 
+</li></ul> 
+</div>
+<p />
+<h1><a name="1_About_this_Document"></a> 1  About this Document </h1>
+<p />
+This document describes all configuration variables in <a href="https://twiki.grid.iu.edu/bin/view/Documentation/Release3/CvmfsReplica" target="_top">cvmfsreplica</a>
+<p />
+<p />
+Conventions used in this document:
+<p />
+<p />
+<font color="#808080">A <i>User Command Line</i> is illustrated by a green box that displays a prompt:</font>
+<p />
+<pre class="screen">
+  [user@client ~]$
+</pre>
+<p />
+<font color="#808080">A <i>Root Command Line</i> is illustrated by a red box that displays the <em>root</em> prompt:</font>
+<p />
+<pre class="rootscreen">
+  [root@replica ~]$
+</pre>
+<p />
+<font color="#808080"><i>Lines in a file</i> are illustrated by a yellow box that displays the desired lines in a file:</font>
+<pre class="file">
+priorities=1
+</pre>
+<p />
+<p />
+<p />
+<h1><a name="2_Applicable_version"></a> 2  Applicable version </h1>
+<p />
+This documentation applies to the latest version of cvmfsreplica: 0.9.4
+<p />
+<p />
+<h1><a name="3_Nomenclature"></a> 3  Nomenclature </h1>
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="3_1_Format_of_the_configuration"></a> 3.1  Format of the configuration files </span></h2>
+<p />
+The format of the configuration files is similar to the Microsoft INI files. The configuration file consists of sections, led by a <code>[section]</code> header and followed by <code>name: value</code> entries, with continuations in the style of <a href="http://tools.ietf.org/html/rfc822.html" target="_top">RFC 822</a> (see section 3.1.1, “LONG HEADER FIELDS”); <code>name=value</code> is also accepted. Note that leading whitespace is removed from values. Additional defaults can be provided on initialization and retrieval. Lines beginning with '#' or ';' are ignored and may be used to provide comments.
+<p />
+It accepts interpolation. This means values can contain format strings which refer to other values in the same section, or values in a special <code>[DEFAULT]</code> section.
+<p />
+Configuration files may include comments, prefixed by specific characters (# and ;). Comments may appear on their own in an otherwise empty line, or may be entered in lines holding values or section names. In the latter case, they need to be preceded by a whitespace character to be recognized as a comment. (For backwards compatibility, only ; starts an inline comment, while # does not.)
+<p />
+As the python package ConfigParser is being used to digest the configuration files, a wider explanation and examples can be found in the <a href="https://docs.python.org/2/library/configparser.html" target="_top">python documentation page</a>. 
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="3_2_Format_of_the_configuration"></a> 3.2  Format of the configuration variables </span></h2>
+<p />
+As a convention, the key name of the configuration variables is always lowercase. Occasionally they may have underscores to separate words, for readibility porpuses. 
+<p />
+The nomenclature used for the configuration variables related to plugins is as follows:
+<p /> <ul>
+<li> the key name is always like &lt;type_of_plugin&gt;plugins
+</li> <li> the value name, in other words the name of the plugin or plugins, start always with capital letter
+</li> <li> for specific plugin variables, the key value is always like &lt;type_of_plugin&gt;.&lt;lower_case_version_of_plugin_name&gt;.key
+</li></ul> 
+<p />
+For example:
+<p />
+<pre class="file">
+reportplugins = Email
+report.email.admin_email = neo@matrix.net
+report.email.smtp_server = my.email.server 
+</pre>
+<p />
+<p />
+<h1><a name="4_sysconfig_cvmfsreplica"></a> 4  sysconfig/cvmfsreplica </h1>
+<p />
+The first set of configuration for the factory is done via the <code>/etc/sysconfig/cvmfsreplica</code> config file. 
+This file does not follow the .INI format. It just contains two pairs key = value, pointing to other relevant files.
+It is highly recommended not to modify the default content:
+<p />
+<pre class="file">
+CONF=/etc/cvmfsreplica/cvmfsreplica.conf
+CONSOLELOG=/var/log/cvmfsreplica/console.log
+</pre>
+<p />
+Explanation:
+<p />
+<table class="tg">
+  <tr>
+    <th class="tg-header">variable</th>
+    <th class="tg-header">description</th>
+    <th class="tg-header">comment</th>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">CONF</td>
+    <td class="tg-raw32s1"> The path to the main configuration file for the cvmfsreplica service.</td>
+    <td class="tg-raw33s1"> Mandatory</td>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">CONSOLELOG</td>
+    <td class="tg-raw32s1">  Path to the filename where to print out error messages during the service initialization.</td>
+    <td class="tg-raw33s1"> Mandatory.  <br>Default value is /var/log/cvmfsreplica/console.log <br>In case of using a different path, set it properly in the file <br> <code>/etc/logrotate.d/cvmfsreplica</code> </td>
+  </tr>
+<p />
+</table>
+<p />
+<h1><a name="5_logrotate_cvmfsreplica"></a> 5  logrotate/cvmfsreplica </h1>
+<p />
+The logs rotation is handle via the standard file <code>/etc/logrotate.d/cvmfsreplica</code>.
+Its value only need to be fixed if some of the log files is in a different location. 
+<p />
+<h1><a name="6_cvmfsreplica_conf"></a> 6  cvmfsreplica.conf </h1>
+<p />
+This is the configuration file that set the basic behavior of the service. Its location is set by variable <code>CONF</code> in the <code>/etc/sysconfig/cvmfsreplica</code> file. By default, it is <code>/etc/cvmfsreplica/cvmfsreplica.conf</code>
+<p />
+It follows the previously described .INI format. It contains a single section, with HEADER <code>[REPLICA]</code>.
+<p />
+Description of the variables:
+<p />
+<p />
+<table class="tg">
+  <tr>
+    <th class="tg-header">variable</th>
+    <th class="tg-header">description</th>
+    <th class="tg-header">comment</th>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">repositoryconf</td>
+    <td class="tg-raw32s1"> path to the configuration file with the repository-by-repository settings</td>
+    <td class="tg-raw33s1"> Mandatory. <br> For consistency, it is recommended to leave its default value <br> <code>file:///etc/cvmfsreplica/repositories.conf</code> </td>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">log</td>
+    <td class="tg-raw32s1"> Destination where to send logging output. <br> Valid values: <br> <ul><li>A filesystem path, starting with <a href="file://" target="_top">file://</a></li> <li>stdout</li><li>syslog</li><ul></td>
+    <td class="tg-raw33s1"> DEFAULT value is <code>file:///var/log/cvmfsreplica/cvmfsreplica.log</code> <br>
+In case of using a file that is not the default, set properly the file <br> <code>/etc/logrotate.d/cvmfsreplica</code> <br>  </td>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">loglevel</td>
+    <td class="tg-raw32s1"> Logging LEVEL. <br> Valid values: <ul> <li>TRACE</li><li>DEBUG</li> <li>INFO</li> <li>WARNING</li><li>ERROR</li> <li>CRITICAL</li> </ul></td>
+    <td class="tg-raw33s1">  Default value is WARNING</td>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">maximum_concurrent_snapshots</td>
+    <td class="tg-raw32s1">the maximum number of replication process that will be allow to run simultaneously  </td>
+    <td class="tg-raw33s1">Mandatory </td>
+  </tr>
+<p />
+</table>
+<p />
+<h1><a name="7_repositories_conf"></a> 7  repositories.conf </h1>
+<p />
+Each section in this file sets the behavior of a separate process thread to manage a CVMFS repository. 
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="7_1_generic_variables"></a> 7.1  generic variables </span></h2>
+<p />
+<table class="tg">
+  <tr>
+    <th class="tg-header">variable</th>
+    <th class="tg-header">description</th>
+    <th class="tg-header">comment</th>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">enabled</td>
+    <td class="tg-raw32s1">used to enable/disable each thread. Valid values as <code>True</code> or <code>False</code> </td>
+    <td class="tg-raw33s1"> Mandatory</td>
+  </tr>
+<tr>
+    <td class="tg-raw31s1">repositoryname</td>
+    <td class="tg-raw32s1"> name of the repository to be replicated.
+Matches /cvmfs/&lt;repository&gt;/
+</td>
+    <td class="tg-raw33s1">  Mandatory</td>
+  </tr>
+<tr>
+    <td class="tg-raw31s1">interval</td>
+    <td class="tg-raw32s1"> time, in seconds, between replication cycles</td>
+    <td class="tg-raw33s1"> Mandatory </td>
+  </tr>
+<tr>
+    <td class="tg-raw31s1">ntrials</td>
+    <td class="tg-raw32s1"> number of times to try replicating the repository in case of failures</td>
+    <td class="tg-raw33s1">  Mandatory</td>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">timeout</td>
+    <td class="tg-raw32s1"> number of seconds until timing out the replication process.</td>
+    <td class="tg-raw33s1">  Optional <br> Use with caution, as the replication can naturally take a long time.</td>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">priority</td>
+    <td class="tg-raw32s1"> Priority number for the repository. The higher the number, the higher the priority. </td>
+    <td class="tg-raw33s1">  Integer. <br> Optional, default=0 <br>New in version 0.9.5</td>
+  </tr>
+<tr>
+    <td class="tg-raw31s1">acceptanceplugins</td>
+    <td class="tg-raw32s1"> list of plugins, split by comma, to decide if the replications should actually be attempted or not</td>
+    <td class="tg-raw33s1">  Optional </td>
+  </tr>
+<tr>
+    <td class="tg-raw31s1">reportplugins</td>
+    <td class="tg-raw32s1"> list of plugins, split by comma,  to notify/report/alert/... when something goes wrong</td>
+    <td class="tg-raw33s1">  Optional </td>
+  </tr>
+<tr>
+    <td class="tg-raw31s1">postplugins</td>
+    <td class="tg-raw32s1"> list of plugins, split by comma,  to run after the replication was done (or attempted)</td>
+    <td class="tg-raw33s1">  Optional</td>
+  </tr>
+<p />
+<p />
+</table>
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="7_2_Report_plugins"></a> 7.2  Report plugins </span></h2>
+<p />
+<h3><a name="7_2_1_Email"></a> 7.2.1  Email </h3>
+<p />
+Sends an email to notify failures.
+<p />
+<table class="tg">
+  <tr>
+    <th class="tg-header">variable</th>
+    <th class="tg-header">description</th>
+    <th class="tg-header">comment</th>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">report.email.admin_email</td>
+    <td class="tg-raw32s1"> email address to send messages when replication fails. <br>
+Multiple addresses can be set split by comma</td>
+    <td class="tg-raw32s1"> Mandatory</td>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">report.email.smtp_server</td>
+    <td class="tg-raw32s1"> SMTP server</td>
+    <td class="tg-raw32s1"> Mandatory</td>
+  </tr>
+<p />
+</table>
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="7_3_Acceptance_plugins"></a> 7.3  Acceptance plugins </span></h2>
+<p />
+<h3><a name="7_3_1_Diskspace"></a> 7.3.1  Diskspace </h3>
+<p />
+Checks if the server was updated after last replication attempt.
+<p />
+<table class="tg">
+  <tr>
+    <th class="tg-header">variable</th>
+    <th class="tg-header">description</th>
+    <th class="tg-header">comment</th>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">diskspace.spool_size</td>
+    <td class="tg-raw32s1"> minimum size needed for the SPOOL directory, in bytes</td>
+    <td class="tg-raw33s1"> Mandatory</td>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">diskspace.storage_size</td>
+    <td class="tg-raw32s1"> minimum size needed for the STORAGE directory, in bytes</td>
+    <td class="tg-raw33s1"> Mandatory</td>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31s1">diskspace.should _abort</td>
+    <td class="tg-raw32s1"> specifies is the thread for that repository should be stopped in case the diskspace test fails. <br> 
+Valid values are <code>True</code> and <code>False</code> </td>
+    <td class="tg-raw33s1"> Optional. <br> Default value is <code>True</code> </td>
+  </tr>
+<p />
+</table>
+<p />
+<h3><a name="7_3_2_Updateserver"></a> 7.3.2  Updateserver </h3>
+<p />
+Checks if the server was updated after the last replication attempt.
+It does not requires specific configuration. The URL for the server is read from the CVMFS configuration files. 
+<p />
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="7_4_Post_plugins"></a> 7.4  Post plugins </span></h2>
+<p />
+<h3><a name="7_4_1_Cleanup"></a> 7.4.1  Cleanup </h3>
+<p />
+Cleans some files that may have been left orphan after an unsuccessfull replication attempt.
+It does not requires specific configuration. The path for the files to be removed is read from the CVMFS configuration files. 
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="7_5_Report_plugins_invoked_from"></a> 7.5  Report plugins invoked from Acceptance plugins </span></h2>
+<p />
+The acceptance plugins can also, when they fail, invoke report plugins.
+The nomenclature to set the report plugins for this case is similar to the general case, but adding string
+"acceptance.&lt;name_of_the_acceptance_plugin&gt;."
+at the beginning of the option name.
+The corresponding Report plugin variables are the same. 
+<p />
+For example:
+<p />
+<pre class="file">
+acceptance.diskspace.reportplugins = Email
+acceptance.diskspace.report.email.admin_email = neo@matrix.net
+acceptance.diskspace.report.email.smtp_server = my.email.server 
+</pre>
+<p />
+<p />
+<h1><a name="8_Examples_of_repositories_conf"></a> 8  Examples of repositories.conf </h1>
+<p />
+Here are some small examples on how to setup file <code>/etc/cvmfsreplica/repositories.conf</code>
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="8_1_Example_1"></a> 8.1  Example 1 </span></h2>
+<p /> <ul>
+<li> 1 repository: atlas
+</li> <li> no extra features
+</li> <li> loop every 15 minutes
+</li></ul> 
+<p />
+<pre class="file">
+[ATLAS]
+enabled = True
+repositoryname = atlas.cern.ch
+interval = 900
+</pre>
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="8_2_Example_2"></a> 8.2  Example 2 </span></h2>
+<p /> <ul>
+<li> 2 repositories: atlas and OASIS
+</li> <li> no extra features
+</li> <li> loop every 15  and 10 minutes respectively
+</li></ul> 
+<p />
+<pre class="file">
+[ATLAS]
+enabled = True
+repositoryname = atlas.cern.ch
+interval = 900
+
+[OASIS]
+enabled = True
+repositoryname = oasis.opensciencegrid.org
+interval = 600
+</pre>
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="8_3_Example_3"></a> 8.3  Example 3 </span></h2>
+<p /> <ul>
+<li> 1 repository: OASIS
+</li> <li> loop every 10 seconds
+</li> <li> retries 3 times in case of failure
+</li></ul> 
+<p />
+<pre class="file">
+[OASIS]
+enabled = True
+repositoryname = oasis.opensciencegrid.org
+interval = 10
+ntrials = 3
+</pre>
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="8_4_Example_4"></a> 8.4  Example 4 </span></h2>
+<p /> <ul>
+<li> 1 repository: OASIS
+</li> <li> loop every 10 seconds
+</li> <li> retries 3 times in case of failure
+</li> <li> timeouts after 30 minutes
+</li></ul> 
+<p />
+<pre class="file">
+[OASIS]
+enabled = True
+repositoryname = oasis.opensciencegrid.org
+interval = 10
+ntrials = 3
+timeout 1800
+</pre>
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="8_5_Example_5"></a> 8.5  Example 5 </span></h2>
+<p /> <ul>
+<li> 1 repository: OASIS
+</li> <li> loop every 10 seconds
+</li> <li> retries 3 times in case of failure
+</li> <li> timeouts after 30 minutes
+</li> <li> reports by email if replication failed
+</li></ul> 
+<p />
+<pre class="file">
+[OASIS]
+enabled = True
+repositoryname = oasis.opensciencegrid.org
+interval = 10
+ntrials = 3
+timeout 1800
+
+reportplugin = Email
+report.email.stmp_server = my.email.server
+report.email.admin_email = neo@matrix.next
+</pre>
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="8_6_Example_5"></a> 8.6  Example 5 </span></h2>
+<p /> <ul>
+<li> 1 repository: OASIS
+</li> <li> loop every 10 seconds
+</li> <li> retries 3 times in case of failure
+</li> <li> timeouts after 30 minutes
+</li> <li> reports by email if replication failed
+</li> <li> checks if there is enough disk space, and aborts if there is not
+</li></ul> 
+<p />
+<pre class="file">
+[OASIS]
+enabled = True
+repositoryname = oasis.opensciencegrid.org
+interval = 10
+ntrials = 3
+timeout 1800
+
+reportplugin = Email
+report.email.stmp_server = my.email.server
+report.email.admin_email = neo@matrix.next
+
+acceptanceplugin = Diskspace
+acceptance.diskspace.spool_size = 100000000000
+acceptance.diskspace.storage_size = 100000000000
+acceptance.diskspace.shoud_abort = True
+</pre>
+<p />
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="8_7_Example_6"></a> 8.7  Example 6 </span></h2>
+<p /> <ul>
+<li> 1 repository: OASIS
+</li> <li> loop every 10 seconds
+</li> <li> retries 3 times in case of failure
+</li> <li> timeouts after 30 minutes
+</li> <li> reports by email if replication failed
+</li> <li> checks if there is enough disk space, and aborts if there is not
+</li> <li> checks if there is new content of the repo at the server
+</li></ul> 
+<p />
+<pre class="file">
+[OASIS]
+enabled = True
+repositoryname = oasis.opensciencegrid.org
+interval = 10
+ntrials = 3
+timeout 1800
+
+reportplugin = Email
+report.email.stmp_server = my.email.server
+report.email.admin_email = neo@matrix.next
+
+acceptanceplugin = Diskspace, Updatedserser
+acceptance.diskspace.spool_size = 100000000000
+acceptance.diskspace.storage_size = 100000000000
+acceptance.diskspace.shoud_abort = True
+</pre>
+<p />
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="8_8_Example_7"></a> 8.8  Example 7 </span></h2>
+<p /> <ul>
+<li> 1 repository: OASIS
+</li> <li> loop every 10 seconds
+</li> <li> retries 3 times in case of failure
+</li> <li> timeouts after 30 minutes
+</li> <li> reports by email if replication failed
+</li> <li> checks if there is enough disk space, and aborts if there is not
+</li> <li> notifies by email if there is no enough disk space
+</li></ul> 
+<p />
+<pre class="file">
+[OASIS]
+enabled = True
+repositoryname = oasis.opensciencegrid.org
+interval = 10
+ntrials = 3
+timeout 1800
+
+reportplugin = Email
+report.email.stmp_server = my.email.server
+report.email.admin_email = neo@matrix.next
+
+acceptanceplugin = Diskspace
+acceptance.diskspace.spool_size = 100000000000
+acceptance.diskspace.storage_size = 100000000000
+acceptance.diskspace.shoud_abort = True
+
+acceptance.diskspace.reportplugins = Email
+acceptance.diskspace.report.email.admin_email = morpheus@matrix.net
+acceptance.diskspace.report.email.smtp_server = my.email.server
+</pre>
+<p />
+<p />
+<p />
+<p />
+
+
+</body></html>
+<p />
