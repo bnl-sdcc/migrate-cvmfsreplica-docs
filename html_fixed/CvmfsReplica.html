@@ -1,0 +1,172 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en_US" lang="en_US">
+<head>
+</head>
+
+<body>
+
+
+<h1><a name="CvmfsReplica"></a> CvmfsReplica </h1>
+<li> <a href="?cover=print#1_About_this_Document">1  About this Document</a>
+</li> <li> <a href="?cover=print#2_Applicable_version">2  Applicable version</a>
+</li> <li> <a href="?cover=print#3_Description">3  Description</a>
+</li> <li> <a href="?cover=print#4_Source_code">4  Source code</a>
+</li> <li> <a href="?cover=print#5_Download">5  Download</a>
+</li> <li> <a href="?cover=print#6_Setup_and_configuration">6  Setup and configuration</a>
+</li> <li> <a href="?cover=print#7_Run_the_service">7  Run the service</a> <ul>
+<li> <a href="?cover=print#7_1_RHEL_6">7.1 RHEL 6</a>
+</li> <li> <a href="?cover=print#7_2_RHEL_7">7.2 RHEL 7</a>
+</li></ul> 
+</li> <li> <a href="?cover=print#8_Contact">8  Contact</a>
+</li> <li> <a href="?cover=print#9_UML">9 UML</a>
+</li></ul> 
+<p />
+<p />
+<h1><a name="1_About_this_Document"></a> 1  About this Document </h1>
+<p />
+This document describes the cvmfsreplica daemon for CVMFS Stratum-1s.
+<p />
+<p />
+Conventions used in this document:
+<p />
+<p />
+<font color="#808080">A <i>User Command Line</i> is illustrated by a green box that displays a prompt:</font>
+<p />
+<pre class="screen">
+  [user@client ~]$
+</pre>
+<p />
+<font color="#808080">A <i>Root Command Line</i> is illustrated by a red box that displays the <em>root</em> prompt:</font>
+<p />
+<pre class="rootscreen">
+  [root@replica ~]$
+</pre>
+<p />
+<font color="#808080"><i>Lines in a file</i> are illustrated by a yellow box that displays the desired lines in a file:</font>
+<pre class="file">
+priorities=1
+</pre>
+<p />
+<p />
+<p />
+<p />
+<h1><a name="2_Applicable_version"></a> 2  Applicable version </h1>
+<p />
+This documentation applies to the latest version of cvmfsreplica: 0.9.4
+<p />
+<p />
+<h1><a name="3_Description"></a> 3  Description </h1>
+<p />
+cvmfsreplica is a tool to handle the process to running snapshots on a CVMFS Stratum-1 host. 
+It is meant to be more flexible and complete than a simple cron job. 
+The behavior of cvmfsreplica is driven by its configuration files. Therefore, it is recommended to read carefully the <a href="https://twiki.grid.iu.edu/bin/view/Documentation/Release3/CvmfsReplicaReferenceManual" target="_top">reference manual</a> before starting the service. 
+Each CVMFS repository is set separately in the configuration files. For each one of them, an internal thread will be created that loops uninterruptedly, triggering snapshot commands periodically. 
+Besides triggering periodically a snapshot command, the service behavior can be modulated making use of the available plugins. 
+<p />
+<table class="tg">
+  <tr>
+    <th class="tg-header">plugin type</th>
+    <th class="tg-header">description</th>
+  </tr>
+<p />
+<tr>
+    <td class="tg-raw31">Acceptance plugins</td>
+    <td class="tg-raw32">
+Acceptance plugins are used to decide, on every cycle, if the snapshot command should or not be attempted. 
+None, one, or more than one acceptance plugins can be used. 
+When they are used, the snapshot step is performed only if all of them passes successfully. 
+Some acceptance plugin may also, when they don't pass, call a report plugin to notify the failure. 
+Also, some acceptance plugin may stop that particular thread, so no more attempts will be performed for that particular repository. 
+</td>
+  </tr>
+<tr>
+    <td class="tg-raw31">Report plugins</td>
+    <td class="tg-raw32">
+The Report plugins are meant to notify the relevant events during the replication process, mostly when something does not work as expected. 
+ </td>
+ </tr>
+<tr>
+    <td class="tg-raw31">Post plugins</td>
+    <td class="tg-raw32">
+The Post plugins perform actions after the snapshot have been attempted, either successfully or not. 
+</td>
+ </tr>
+</table>
+<p />
+Detailed description of the plugins and their configuration can be found in the <a href="https://twiki.grid.iu.edu/bin/view/Documentation/Release3/CvmfsReplicaReferenceManual" target="_top">reference manual</a>
+<p />
+<p />
+<h1><a name="4_Source_code"></a> 4  Source code </h1>
+cvmfsreplica it is written in python.
+Code can be found <a href="http://github.com/jose-caballero/cvmfsreplica" target="_top">here</a>
+<p />
+<h1><a name="5_Download"></a> 5  Download </h1>
+<p />
+<strong>WARNING: this is temporary until the RPMs are distributed from CERN</strong>
+<p />
+<pre class="rootscreen">
+[root@replica ~]$ rpm -Uhv  http://repo.grid.iu.edu/osg/3.3/el6/development/x86_64/cvmfsreplica-0.9.4-1.noarch.rpm
+</pre>
+<p />
+<h1><a name="6_Setup_and_configuration"></a> 6  Setup and configuration </h1>
+<p />
+The cvmfsreplica daemon works on top of an existing, properly configured, CVMFS Stratum-1. 
+Documentation on how to setup and run a CVMFS Stratum-1, or replica server, can be found <a href="https://twiki.grid.iu.edu/bin/view/Documentation/Release3/InstallCvmfsStratum1" target="_top">here</a>, 
+and also in the <a href="https://cvmfs.readthedocs.io/en/latest/cpt-replica.html" target="_top">official CVMFS documentation</a>
+<p />
+The details on how to setup and configure the cvmfsreplica are explained in the <a href="https://twiki.grid.iu.edu/bin/view/Documentation/Release3/CvmfsReplicaReferenceManual" target="_top">reference manual</a>
+<p />
+<h1><a name="7_Run_the_service"></a> 7  Run the service </h1>
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="7_1_RHEL_6"></a> 7.1  RHEL 6 </span></h2>
+<p />
+To start the service:
+<pre class="rootscreen">
+[root@replica ~]$ service start cvmfsreplica
+</pre>
+<p />
+<p />
+To restart the service:
+<pre class="rootscreen">
+[root@replica ~]$ service restart cvmfsreplica
+</pre>
+<p />
+To stop the service:
+<pre class="rootscreen">
+[root@replica ~]$ service stop cvmfsreplica
+</pre>
+<p />
+To check the status of the service:
+<pre class="rootscreen">
+[root@replica ~]$ service status cvmfsreplica
+</pre>
+<p />
+<h2 class="twikinetRoundedAttachments"><span class="twikinetHeader"><a name="7_2_RHEL_7"></a> 7.2  RHEL 7 </span></h2>
+<p />
+<p />
+To start the service:
+<pre class="rootscreen">
+[root@replica ~]$ systemctl start cvmfsreplica.service
+</pre>
+<p />
+<p />
+To stop the service:
+<pre class="rootscreen">
+[root@replica ~]$ systemctl stop cvmfsreplica.service
+</pre>
+<p />
+<h1><a name="8_Contact"></a> 8  Contact </h1>
+<p />
+This work was done as part of the Open Science Grid Technologies Investigation project. 
+<p />
+Project manager: Brian Bockelman &lt;bbockelm@cse.unl.edu&gt; <br>
+Developer: Jose Caballero &lt;jcaballero@bnl.gov&gt;
+<p />
+<p />
+<h1><a name="9_UML"></a> 9  UML </h1>
+<p />
+<img src="https://twiki.grid.iu.edu/twiki/pub/Documentation/Release3/CvmfsReplica/cvmfsreplicaflow.png">
+<p />
+
+
+</body>
+</html>
